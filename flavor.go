@@ -132,6 +132,8 @@ func (f Flavor) Quote(name string) string {
 		return fmt.Sprintf("`%s`", name)
 	case PostgreSQL, SQLServer, SQLite:
 		return fmt.Sprintf(`"%s"`, name)
+	case CQL:
+		return fmt.Sprintf("'%s'", name)
 	}
 
 	return name
