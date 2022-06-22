@@ -150,8 +150,8 @@ func TestFlavorInterpolate(t *testing.T) {
 		},
 		{
 			CQL,
-			"SELECT ?, ?, ?, ?, ?, ?", []interface{}{true, false, float32(1.234567), float64(9.87654321), []byte(nil), nil},
-			"SELECT TRUE, FALSE, 1.234567, 9.87654321, NULL, NULL", nil,
+			"SELECT ?, ?, ?, ?, ?, ?, ?", []interface{}{true, false, float32(1.234567), float64(9.87654321), []byte(nil), []byte("I'm bytes"), nil},
+			"SELECT TRUE, FALSE, 1.234567, 9.87654321, NULL, 0x49276D206279746573, NULL", nil,
 		},
 		{
 			CQL,

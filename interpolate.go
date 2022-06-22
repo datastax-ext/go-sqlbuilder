@@ -458,7 +458,7 @@ func encodeValue(buf []byte, arg interface{}, flavor Flavor) ([]byte, error) {
 			buf = appendHex(buf, v)
 			buf = append(buf, '\'')
 
-		case SQLServer:
+		case SQLServer, CQL:
 			buf = append(buf, "0x"...)
 			buf = appendHex(buf, v)
 		}
