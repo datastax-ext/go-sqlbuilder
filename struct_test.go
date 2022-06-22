@@ -516,6 +516,21 @@ func ExampleStruct_forPostgreSQL() {
 	// [1234]
 }
 
+func ExampleStruct_forCQL() {
+	userStruct := NewStruct(new(User)).For(CQL)
+
+	sb := userStruct.SelectFrom("user")
+	sb.Where(sb.E("id", 1234))
+	sql, args := sb.Build()
+
+	fmt.Println(sql)
+	fmt.Println(args)
+
+	// Output:
+	// SELECT id, name, status FROM user WHERE id = ?
+	// [1234]
+}
+
 type structWithQuote struct {
 	A string  `db:"aa" fieldopt:"withquote"`
 	B int     `db:"-" fieldopt:"withquote"` // fieldopt is ignored as db is "-".
