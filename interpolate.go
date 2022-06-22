@@ -489,6 +489,9 @@ func encodeValue(buf []byte, arg interface{}, flavor Flavor) ([]byte, error) {
 
 		case SQLServer:
 			buf = append(buf, v.Format("2006-01-02 15:04:05.999999 Z07:00")...)
+
+		case CQL:
+			buf = append(buf, v.Format("2006-01-02 15:04:05.999999Z0700")...)
 		}
 
 		buf = append(buf, '\'')
