@@ -72,6 +72,8 @@ func (f Flavor) Interpolate(sql string, args []interface{}) (string, error) {
 		return sqliteInterpolate(sql, args...)
 	case SQLServer:
 		return sqlserverInterpolate(sql, args...)
+	case CQL:
+		return cqlInterpolate(sql, args...)
 	}
 
 	return "", ErrInterpolateNotImplemented

@@ -384,6 +384,11 @@ func sqliteInterpolate(query string, args ...interface{}) (string, error) {
 	return mysqlLikeInterpolate(SQLite, query, args...)
 }
 
+// cqlInterpolate works the same as MySQL interpolating.
+func cqlInterpolate(query string, args ...interface{}) (string, error) {
+	return mysqlLikeInterpolate(CQL, query, args...)
+}
+
 func encodeValue(buf []byte, arg interface{}, flavor Flavor) ([]byte, error) {
 	switch v := arg.(type) {
 	case nil:
@@ -540,7 +545,11 @@ func quoteStringValue(buf []byte, s string, flavor Flavor) []byte {
 			buf = append(buf, "\\Z"...)
 
 		case '\'':
-			buf = append(buf, "\\'"...)
+			if flavor == CQL {
+				buf = append(buf, "''"...)
+			} else {
+				buf = append(buf, "\\'"...)
+			}
 
 		case '"':
 			buf = append(buf, "\\\""...)
