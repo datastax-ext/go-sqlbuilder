@@ -16,6 +16,7 @@ const (
 	PostgreSQL
 	SQLite
 	SQLServer
+	CQL
 )
 
 var (
@@ -49,6 +50,8 @@ func (f Flavor) String() string {
 		return "SQLite"
 	case SQLServer:
 		return "SQLServer"
+	case CQL:
+		return "CQL"
 	}
 
 	return "<invalid>"
