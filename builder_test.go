@@ -104,19 +104,14 @@ func TestBuildWithPostgreSQL(t *testing.T) {
 	a.Equal(args, []interface{}{7890, 1234, 2, 4567, 5})
 }
 
-func TestBuildWithPostgreCQL(t *testing.T) {
+func TestBuildWithCQL(t *testing.T) {
 	a := assert.New(t)
-	sb1 := CQL.NewSelectBuilder()
-	sb1.Select("col1", "col2").From("t1").Where(sb1.E("id", 1234), sb1.G("level", 2))
 
-	sb2 := CQL.NewSelectBuilder()
-	sb2.Select("col3", "col4").From("t2").Where(sb2.E("id", 4567), sb2.LE("level", 5))
+	ib1 := CQL.NewInsertBuilder()
+	ib1.InsertInto("t1").Cols("col1", "col2").Values(1, 2)
 
-	// Use DefaultFlavor (MySQL) instead of CQL.
-	sql, args := Build("SELECT $1 AS col5 LEFT JOIN $0 LEFT JOIN $2", sb1, 7890, sb2).Build()
-
-	a.Equal(sql, "SELECT ? AS col5 LEFT JOIN SELECT col1, col2 FROM t1 WHERE id = ? AND level > ? LEFT JOIN SELECT col3, col4 FROM t2 WHERE id = ? AND level <= ?")
-	a.Equal(args, []interface{}{7890, 1234, 2, 4567, 5})
+	ib2 := CQL.NewInsertBuilder()
+	ib2.InsertInto("t2").Cols("col3", "col4").Values(3, 4)
 
 	old := DefaultFlavor
 	DefaultFlavor = CQL
@@ -124,8 +119,8 @@ func TestBuildWithPostgreCQL(t *testing.T) {
 		DefaultFlavor = old
 	}()
 
-	sql, args = Build("SELECT $1 AS col5 LEFT JOIN $0 LEFT JOIN $2", sb1, 7890, sb2).Build()
+	sql, args := Build("BEGIN BATCH USING TIMESTAMP $0 $1; $2; APPLY BATCH;", 1481124356754405, ib1, ib2).Build()
 
-	a.Equal(sql, "SELECT ? AS col5 LEFT JOIN SELECT col1, col2 FROM t1 WHERE id = ? AND level > ? LEFT JOIN SELECT col3, col4 FROM t2 WHERE id = ? AND level <= ?")
-	a.Equal(args, []interface{}{7890, 1234, 2, 4567, 5})
+	a.Equal(sql, "BEGIN BATCH USING TIMESTAMP ? INSERT INTO t1 (col1, col2) VALUES (?, ?); INSERT INTO t2 (col3, col4) VALUES (?, ?); APPLY BATCH;")
+	a.Equal(args, []interface{}{1481124356754405, 1, 2, 3, 4})
 }

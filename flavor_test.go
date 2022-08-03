@@ -125,9 +125,8 @@ func ExampleFlavor_Interpolate_sqlServer() {
 func ExampleFlavor_Interpolate_cql() {
 	sb := CQL.NewSelectBuilder()
 	sb.Select("name").From("user").Where(
-		sb.NE("id", 1234),
+		sb.E("id", 1234),
 		sb.E("name", "Charmy Liu"),
-		sb.Like("desc", "%mother's day%"),
 	)
 	sql, args := sb.Build()
 	query, err := CQL.Interpolate(sql, args)
@@ -136,6 +135,6 @@ func ExampleFlavor_Interpolate_cql() {
 	fmt.Println(err)
 
 	// Output:
-	// SELECT name FROM user WHERE id <> 1234 AND name = 'Charmy Liu' AND desc LIKE '%mother''s day%'
+	// SELECT name FROM user WHERE id = 1234 AND name = 'Charmy Liu'
 	// <nil>
 }
